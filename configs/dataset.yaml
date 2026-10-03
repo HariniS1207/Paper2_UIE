@@ -1,0 +1,24 @@
+dataset:
+  name: EUVP
+  root: ../data/EUVP/EUVP-Dataset/EUVP
+
+paired:
+  underwater_dark:
+    train_input: Paired/underwater_dark/trainA
+    train_target: Paired/underwater_dark/trainB
+    validation: Paired/underwater_dark/validation
+
+  underwater_imagenet:
+    train_input: Paired/underwater_imagenet/trainA
+    train_target: Paired/underwater_imagenet/trainB
+    validation: Paired/underwater_imagenet/validation
+
+  underwater_scenes:
+    train_input: Paired/underwater_scenes/trainA
+    train_target: Paired/underwater_scenes/trainB
+    validation: Paired/underwater_scenes/validation
+
+preprocessing:
+  resize: 256
+  crop: 256
+  normalization: null

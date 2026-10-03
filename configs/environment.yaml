@@ -1,0 +1,12 @@
+project:
+  name: Paper2_UIE
+  python: "3.12"
+
+runtime:
+  device: cuda
+  gpu: "NVIDIA GeForce RTX 3050 6GB Laptop GPU"
+  cuda: "13.0"
+
+framework:
+  pytorch: "2.13.0+cu130"
+  torchvision: "0.28.0+cu130"
