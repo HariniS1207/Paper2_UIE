@@ -1,12 +1,19 @@
 from pathlib import Path
 from typing import List, Tuple
 
+import torchvision.transforms as transforms
 from PIL import Image
-import torch
 from torch.utils.data import Dataset
 
 
-IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff"}
+IMAGE_EXTENSIONS = {
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".bmp",
+    ".tif",
+    ".tiff",
+}
 
 
 class EUVPPairedDataset(Dataset):
@@ -18,6 +25,9 @@ class EUVPPairedDataset(Dataset):
         target_image -> trainB
 
     The original EUVP directory structure is preserved.
+
+    When no transform is supplied, images are converted to
+    PyTorch tensors using torchvision.transforms.ToTensor().
     """
 
     def __init__(
@@ -40,9 +50,11 @@ class EUVPPairedDataset(Dataset):
             if split == "train":
                 input_dir = collection_root / "trainA"
                 target_dir = collection_root / "trainB"
+
             elif split == "validation":
                 input_dir = collection_root / "validation"
                 target_dir = None
+
             else:
                 raise ValueError(
                     f"Unsupported split: {split}. "
@@ -69,7 +81,9 @@ class EUVPPairedDataset(Dataset):
                 }
 
                 for input_path in input_files:
-                    target_path = target_map.get(input_path.stem)
+                    target_path = target_map.get(
+                        input_path.stem
+                    )
 
                     if target_path is None:
                         raise RuntimeError(
@@ -111,7 +125,10 @@ class EUVPPairedDataset(Dataset):
         input_image = self._load_image(input_path)
         target_image = self._load_image(target_path)
 
-        if self.transform is not None:
+        if self.transform is None:
+            input_image = transforms.ToTensor()(input_image)
+            target_image = transforms.ToTensor()(target_image)
+        else:
             input_image, target_image = self.transform(
                 input_image,
                 target_image,

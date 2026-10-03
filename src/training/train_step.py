@@ -1,5 +1,7 @@
 import torch
 
+from src.training.loss_utils import create_controlled_outputs
+
 
 def train_step(
     model,
@@ -18,21 +20,23 @@ def train_step(
 
     outputs = model(input_image, alpha)
 
-    # Use the initial enhancement as the reconstruction prediction.
     prediction = outputs["enhanced"]
 
-    # Reuse the consequence representation for the initial
-    # consistency objective. A later training stage can introduce
-    # separate consequence paths.
-    consequence_a = outputs["consequence_vector"]
-    consequence_b = outputs["consequence_vector"].detach()
+    low_output, high_output = create_controlled_outputs(
+        model.enhancer,
+        input_image,
+    )
 
-    # Generate controlled outputs for the control objective.
-    low_alpha = torch.zeros_like(alpha)
-    high_alpha = torch.ones_like(alpha)
+    low_redegraded = model.redegrader(low_output)
+    high_redegraded = model.redegrader(high_output)
 
-    low_output = model.enhancer(input_image, low_alpha)
-    high_output = model.enhancer(input_image, high_alpha)
+    consequence_a = model.consequence_encoder.encode_map(
+        torch.abs(input_image - low_redegraded)
+    )
+
+    consequence_b = model.consequence_encoder.encode_map(
+        torch.abs(input_image - high_redegraded)
+    )
 
     loss = loss_fn(
         prediction,

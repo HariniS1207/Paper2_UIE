@@ -7,11 +7,7 @@ class ConsequenceEncoder(nn.Module):
     Encodes the consequence of enhancement.
 
     The consequence is represented using the difference between
-    the original underwater image and its re-degraded reconstruction.
-
-    Output:
-        consequence_map: spatial representation
-        consequence_vector: compact global representation
+    the original underwater image and a re-degraded reconstruction.
     """
 
     def __init__(
@@ -55,6 +51,22 @@ class ConsequenceEncoder(nn.Module):
             embedding_dim,
         )
 
+    def encode_map(
+        self,
+        consequence: torch.Tensor,
+    ):
+        """
+        Encode an already-computed consequence map.
+        """
+
+        features = self.encoder(consequence)
+
+        pooled = self.pool(features).flatten(1)
+
+        vector = self.projection(pooled)
+
+        return vector
+
     def forward(
         self,
         original: torch.Tensor,
@@ -70,12 +82,12 @@ class ConsequenceEncoder(nn.Module):
                 "original and redegraded must have identical shapes"
             )
 
-        consequence = torch.abs(original - redegraded)
+        consequence = torch.abs(
+            original - redegraded
+        )
 
-        features = self.encoder(consequence)
-
-        pooled = self.pool(features).flatten(1)
-
-        consequence_vector = self.projection(pooled)
+        consequence_vector = self.encode_map(
+            consequence
+        )
 
         return consequence, consequence_vector

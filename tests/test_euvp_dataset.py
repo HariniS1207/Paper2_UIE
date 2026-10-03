@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import torch
+
 from src.data.euvp_dataset import EUVPPairedDataset
 
 
@@ -41,7 +43,17 @@ def test_euvp_first_training_pair():
 
     sample = dataset[0]
 
-    assert sample["input"].mode == "RGB"
-    assert sample["target"].mode == "RGB"
-    assert sample["input"].size == (256, 256)
-    assert sample["target"].size == (256, 256)
+    assert isinstance(sample["input"], torch.Tensor)
+    assert isinstance(sample["target"], torch.Tensor)
+
+    assert sample["input"].shape == (3, 256, 256)
+    assert sample["target"].shape == (3, 256, 256)
+
+    assert sample["input"].dtype == torch.float32
+    assert sample["target"].dtype == torch.float32
+
+    assert sample["input"].min() >= 0.0
+    assert sample["input"].max() <= 1.0
+
+    assert sample["target"].min() >= 0.0
+    assert sample["target"].max() <= 1.0

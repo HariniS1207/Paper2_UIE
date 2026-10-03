@@ -1,0 +1,24 @@
+training:
+  epochs: 20
+  batch_size: 4
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+
+  alpha:
+    values:
+      - 0.0
+      - 0.25
+      - 0.5
+      - 0.75
+      - 1.0
+
+  checkpoint_every: 1
+
+loss:
+  reconstruction_weight: 1.0
+  consequence_weight: 0.1
+  control_weight: 0.1
+
+runtime:
+  device: cuda
+  num_workers: 0
