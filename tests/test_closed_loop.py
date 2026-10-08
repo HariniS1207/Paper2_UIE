@@ -13,9 +13,10 @@ def test_closed_loop_outputs():
 
     assert outputs["enhanced"].shape == x.shape
     assert outputs["redegraded"].shape == x.shape
-    assert outputs["consequence_map"].shape == x.shape
+    assert outputs["consequence_map"].shape == (2, 10, 64, 64)
     assert outputs["consequence_vector"].shape == (2, 128)
     assert outputs["updated_alpha"].shape == (2,)
+    assert outputs["adjustment"].shape == (2,)
 
 
 def test_updated_alpha_range():

@@ -1,54 +1,87 @@
 import torch
 
-from src.training.loss_utils import create_controlled_outputs
-
+from src.losses.alpha import IdentityLoss, EndpointLoss
 
 def train_step(
     model,
     optimizer,
-    loss_fn,
     input_image,
     target,
     alpha,
+    identity_weight=1.0,
+    endpoint_weight=1.0,
 ):
     """
-    Execute one optimization step for the one-step closed loop.
+    Execute one optimization step for the alpha-controlled enhancer.
+
+    Current objective:
+        1. E(X, 0) ~= X
+        2. E(X, 1) ~= target
+
+    The consequence-aware feedback objective will be added
+    after the alpha endpoint behavior is validated.
     """
 
     model.train()
+    enhancer = getattr(model, "enhancer", model)
     optimizer.zero_grad()
 
-    outputs = model(input_image, alpha)
+    batch_size = input_image.shape[0]
 
-    prediction = outputs["enhanced"]
+    # ---------------------------------------------------------
+    # Endpoint 0: identity
+    # ---------------------------------------------------------
+    zero_alpha = torch.zeros(
+        batch_size,
+        device=input_image.device,
+        dtype=input_image.dtype,
+    )
 
-    low_output, high_output = create_controlled_outputs(
-        model.enhancer,
+    identity_output = enhancer(
+        input_image,
+        zero_alpha,
+    )
+
+    # ---------------------------------------------------------
+    # Endpoint 1: maximum enhancement
+    # ---------------------------------------------------------
+    one_alpha = torch.ones(
+        batch_size,
+        device=input_image.device,
+        dtype=input_image.dtype,
+    )
+
+    endpoint_output = enhancer(
+        input_image,
+        one_alpha,
+    )
+
+    # ---------------------------------------------------------
+    # Losses
+    # ---------------------------------------------------------
+    identity_loss_fn = IdentityLoss()
+    endpoint_loss_fn = EndpointLoss()
+
+    identity_loss = identity_loss_fn(
+        identity_output,
         input_image,
     )
 
-    low_redegraded = model.redegrader(low_output)
-    high_redegraded = model.redegrader(high_output)
-
-    consequence_a = model.consequence_encoder.encode_map(
-        torch.abs(input_image - low_redegraded)
-    )
-
-    consequence_b = model.consequence_encoder.encode_map(
-        torch.abs(input_image - high_redegraded)
-    )
-
-    loss = loss_fn(
-        prediction,
+    endpoint_loss = endpoint_loss_fn(
+        endpoint_output,
         target,
-        consequence_a,
-        consequence_b,
-        input_image,
-        low_output,
-        high_output,
     )
 
-    loss.backward()
+    total_loss = (
+        identity_weight * identity_loss
+        + endpoint_weight * endpoint_loss
+    )
+
+    total_loss.backward()
     optimizer.step()
 
-    return loss.detach()
+    return {
+        "loss": total_loss.detach(),
+        "identity_loss": identity_loss.detach(),
+        "endpoint_loss": endpoint_loss.detach(),
+    }

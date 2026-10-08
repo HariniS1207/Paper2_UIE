@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102a32">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>Paper 2 | Controllable Underwater Enhancement</title>
+  <style>
+    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:#142c32;background:#f2f6f5;font-synthesis:none}
+    *{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}
+    .hero{background:linear-gradient(120deg,#102b33,#1a4d52 65%,#29756f);color:#f2fbf8;padding:30px max(24px,calc((100vw - 1220px)/2)) 26px}
+    .topline{display:flex;justify-content:space-between;align-items:center;gap:16px}.brand{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#a7d9ce;font-weight:750}
+    .status{font-size:12px;border:1px solid #47716f;border-radius:99px;padding:8px 12px;color:#d5eee8}.status:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#84d1a2;margin:0 8px 1px 0}
+    h1{font-size:clamp(27px,4vw,43px);line-height:1.08;margin:27px 0 9px;letter-spacing:-.04em}.subtitle{margin:0;color:#bcd6d2;font-size:15px}
+    main{max-width:1220px;margin:22px auto;padding:0 22px 42px;display:grid;gap:18px}.card{background:#fff;border:1px solid #dce8e4;border-radius:17px;box-shadow:0 7px 24px #173a3510;padding:22px}
+    .cardhead{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:17px}.eyebrow{font-size:11px;color:#4d8278;text-transform:uppercase;letter-spacing:.13em;font-weight:800}.card h2{font-size:19px;margin:5px 0 0;letter-spacing:-.02em}.muted{color:#6c8183;font-size:13px;line-height:1.55}.upload{border:1px dashed #9dbab2;border-radius:13px;padding:17px;background:#f8fbfa;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.upload input{max-width:100%;color:#476266}.filehint{font-size:12px;color:#6b8081;margin-top:8px}
+    .controls{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin:17px 0}.sliderrow{display:flex;align-items:center;gap:14px}.sliderrow input{width:100%;accent-color:#237a70}.value{font-variant-numeric:tabular-nums;font-weight:750;color:#17675f;min-width:48px;text-align:right}.presets{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}.preset,.secondary{background:#fff;border:1px solid #cbdcd7;border-radius:9px;padding:8px 12px;color:#315255}.preset.active{background:#e2f3ef;border-color:#56a295;color:#155f57;font-weight:700}.actions{display:flex;gap:10px;flex-wrap:wrap}.primary{background:#176b63;color:white;border:0;border-radius:10px;padding:11px 16px;font-weight:700;box-shadow:0 3px 9px #176b6330}.primary:hover{background:#105a54}.secondary:hover,.preset:hover{border-color:#58a095}.tabs{display:flex;gap:8px;border-bottom:1px solid #e4ece9;margin:0 -2px 17px}.tab{padding:10px 13px;border:0;border-bottom:2px solid transparent;background:transparent;color:#718586;font-weight:700}.tab.active{color:#176b63;border-bottom-color:#28877b}.pane[hidden]{display:none}.results{margin-top:19px}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.tile{min-width:0}.tilelabel{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:750;color:#496366;margin:0 1px 7px}.tile img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#e8efed;border-radius:11px;border:1px solid #e1e9e6;cursor:zoom-in}.controllerinfo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:15px}.decision{background:#edf7f4;border-radius:13px;padding:15px}.decision strong{font-size:24px;letter-spacing:.04em;color:#176b63}.numbers{display:flex;gap:22px;margin-top:12px}.number span{display:block;color:#6b8181;font-size:11px}.number b{font-size:17px;font-variant-numeric:tabular-nums}.prob{display:grid;gap:9px}.probrow{display:grid;grid-template-columns:83px 1fr 45px;gap:8px;align-items:center;font-size:12px}.bar{height:8px;border-radius:9px;background:#e8efed;overflow:hidden}.bar i{display:block;height:100%;background:#3b9387;border-radius:9px}.notice{border-left:3px solid #d4a853;padding:9px 12px;background:#fff9ec;color:#725e34;border-radius:0 8px 8px 0;font-size:12px;line-height:1.5;margin-top:14px}.metadata{font-size:12px;color:#728485;margin-top:13px}.error{display:none;margin-top:14px;padding:11px 13px;background:#fff0ef;border:1px solid #f0c8c3;color:#8d3029;border-radius:10px;font-size:13px}.busy{opacity:.6;pointer-events:none}.modal{position:fixed;inset:0;background:#061719e8;display:none;align-items:center;justify-content:center;padding:24px;z-index:10}.modal.open{display:flex}.modal img{max-width:95vw;max-height:90vh;object-fit:contain}.modal button{position:absolute;top:18px;right:22px;border:0;border-radius:50%;width:42px;height:42px;font-size:24px;background:#fff;color:#18353a}
+    @media(max-width:760px){main{padding:0 13px 28px;margin-top:13px}.card{padding:17px}.grid5{grid-template-columns:repeat(2,minmax(0,1fr))}.grid5 .tile:last-child{grid-column:span 2}.grid3{grid-template-columns:1fr}.controllerinfo{grid-template-columns:1fr}.hero{padding:23px 17px}.topline{align-items:flex-start}.controls{grid-template-columns:1fr}.actions>*{flex:1}.grid2{gap:9px}}
+  </style>
+</head>
+<body>
+  <header class="hero"><div class="topline"><div class="brand">Paper 2 · Frozen research system</div><div class="status" id="status">Loading frozen models</div></div><h1>Controllable Underwater<br>Image Enhancement</h1><p class="subtitle">Consequence-aware one-step enhancement · visual research demo</p></header>
+  <main>
+    <section class="card">
+      <div class="cardhead"><div><div class="eyebrow">01 · Input</div><h2>Choose an underwater image</h2></div><span class="muted">PNG · JPG · WEBP · up to 10 MB</span></div>
+      <div class="upload"><div><input id="file" type="file" accept="image/png,image/jpeg,image/webp"><div class="filehint" id="filename">Your image is processed in memory and is not saved.</div></div><div class="muted" id="device">Model device: checking…</div></div>
+      <div class="notice">The trained pipeline converts to RGB and resizes to 256 × 256 using bilinear interpolation. This matches the research evaluation preprocessing and can change the image’s aspect ratio during inference. The displayed result is resized back to the uploaded dimensions.</div>
+    </section>
+    <section class="card">
+      <div class="tabs"><button class="tab active" data-pane="manual">Manual alpha</button><button class="tab" data-pane="controller">One-step controller</button></div>
+      <div class="pane" id="manual">
+        <div class="cardhead"><div><div class="eyebrow">02 · Enhancement strength</div><h2>Set alpha manually</h2></div><div class="muted">Choose any value from 0 to 1</div></div>
+        <div class="controls"><div class="sliderrow"><span class="muted">0.00</span><input id="alpha" type="range" min="0" max="1" step="0.01" value="0.50"><span class="muted">1.00</span></div><output class="value" id="alphaValue">0.50</output></div>
+        <div class="presets" id="presets"></div>
+        <div class="actions" style="margin-top:15px"><button class="primary" id="enhance">Enhance at selected alpha</button><button class="secondary" id="compare">Compare five alpha levels</button></div>
+        <div class="results grid2" id="manualResult"></div>
+      </div>
+      <div class="pane" id="controller" hidden>
+        <div class="cardhead"><div><div class="eyebrow">03 · Recommended enhancement direction</div><h2>Apply the frozen Baseline-B controller</h2></div><div class="muted">One directional step · h = 0.10</div></div>
+        <div class="controls"><div class="sliderrow"><span class="muted">Initial alpha</span><input id="controllerAlpha" type="range" min="0" max="1" step="0.01" value="0.50"><span class="muted">1.00</span></div><output class="value" id="controllerAlphaValue">0.50</output></div>
+        <div class="actions"><button class="primary" id="applyController">Get controller recommendation</button></div>
+        <div id="controllerResult"></div>
+        <div class="notice">This is a controller recommendation, not a guarantee of better quality. Arbitrary uploads have no ground-truth reference. The paper evaluation established one-step results; multi-step stability was not established.</div>
+      </div>
+      <div class="error" id="error" role="alert"></div>
+    </section>
+    <p class="muted" style="text-align:center;margin:0">Reference-based scores are only meaningful when a paired ground-truth target is available. No reference is provided for this upload.</p>
+  </main>
+  <div class="modal" id="modal"><button aria-label="Close image">×</button><img alt="Expanded result"></div>
+  <script>
+    const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+    let file=null, sourceUrl=null;
+    const levelValues=[0,.25,.5,.75,1];
+    const error=(message='')=>{const e=$('#error');e.textContent=message;e.style.display=message?'block':'none'};
+    const dataUrl=b64=>'data:image/png;base64,'+b64;
+    const setBusy=on=>document.querySelectorAll('button').forEach(b=>b.disabled=on);
+    const chooseFile=f=>{if(sourceUrl)URL.revokeObjectURL(sourceUrl);file=f;sourceUrl=URL.createObjectURL(f);$('#filename').textContent=`${f.name} · ${(f.size/1024/1024).toFixed(2)} MB · processed in memory`;$('#manualResult').innerHTML='';$('#controllerResult').innerHTML='';error()};
+    $('#file').addEventListener('change',e=>{if(e.target.files[0])chooseFile(e.target.files[0])});
+    for(const v of levelValues){const b=document.createElement('button');b.className='preset';b.textContent=v.toFixed(2);b.onclick=()=>{$('#alpha').value=v;$('#alpha').dispatchEvent(new Event('input'))};$('#presets').append(b)}
+    const syncAlpha=(input,output)=>{output.textContent=Number(input.value).toFixed(2);if(input.id==='alpha') $$('.preset').forEach(b=>b.classList.toggle('active',Number(b.textContent)===Number(input.value)))};
+    $('#alpha').addEventListener('input',()=>syncAlpha($('#alpha'),$('#alphaValue')));$('#controllerAlpha').addEventListener('input',()=>syncAlpha($('#controllerAlpha'),$('#controllerAlphaValue')));syncAlpha($('#alpha'),$('#alphaValue'));syncAlpha($('#controllerAlpha'),$('#controllerAlphaValue'));
+    $$('.tab').forEach(b=>b.onclick=()=>{$$('.tab').forEach(x=>x.classList.toggle('active',x===b));$$('.pane').forEach(p=>p.hidden=p.id!==b.dataset.pane);error()});
+    async function post(url,alpha){if(!file)throw Error('Choose an image first.');const form=new FormData();form.append('image',file);if(alpha!==null)form.append('alpha',alpha);const response=await fetch(url,{method:'POST',body:form});const body=await response.json();if(!response.ok)throw Error(body.detail||'The request could not be completed.');return body}
+    function tile(label,src,detail=''){return `<div class="tile"><div class="tilelabel"><span>${label}</span><span>${detail}</span></div><img src="${src}" alt="${label}" loading="lazy"></div>`}
+    function metadata(m){$('#device').textContent=`${m.device.toUpperCase()} · ${m.inference_time_ms.toFixed(1)} ms · ${m.input_width} × ${m.input_height} px`;return `<div class="metadata">Inference: ${m.inference_time_ms.toFixed(1)} ms · ${m.device.toUpperCase()} · 256 × 256 model input · No reference image</div>`}
+    $('#enhance').onclick=async()=>{try{error();setBusy(true);$('#manualResult').classList.add('busy');const r=await post('/api/enhance',$('#alpha').value);$('#manualResult').innerHTML=tile('Original',dataUrl(r.original_image))+tile(`Enhanced · α=${r.alpha.toFixed(2)}`,dataUrl(r.enhanced_image))+metadata(r.metadata)}catch(e){error(e.message)}finally{setBusy(false);$('#manualResult').classList.remove('busy')}};
+    $('#compare').onclick=async()=>{try{error();setBusy(true);$('#manualResult').classList.add('busy');const r=await post('/api/compare-alphas',null);const cards=levelValues.map(a=>tile(`α = ${a.toFixed(2)}`,dataUrl(r.outputs[a.toFixed(2)]))).join('');$('#manualResult').innerHTML=`<div class="tile" style="grid-column:1/-1"><div class="tilelabel">Original input</div><img src="${sourceUrl}" alt="Original input"></div><div class="grid5" style="grid-column:1/-1">${cards}</div>${metadata(r.metadata)}`}catch(e){error(e.message)}finally{setBusy(false);$('#manualResult').classList.remove('busy')}};
+    $('#applyController').onclick=async()=>{try{error();setBusy(true);$('#controllerResult').classList.add('busy');const r=await post('/api/controller',$('#controllerAlpha').value);const probs=Object.entries(r.probabilities).map(([k,v])=>`<div class="probrow"><span>${k[0].toUpperCase()+k.slice(1)}</span><div class="bar"><i style="width:${(100*v).toFixed(2)}%"></i></div><b>${(100*v).toFixed(2)}%</b></div>`).join('');$('#controllerResult').innerHTML=`<div class="controllerinfo"><div class="decision"><div class="muted">Controller recommendation</div><strong>${r.action.toUpperCase()}</strong><div class="numbers"><div class="number"><span>Current alpha</span><b>${r.current_alpha.toFixed(2)}</b></div><div class="number"><span>Suggested alpha</span><b>${r.suggested_alpha.toFixed(2)}</b></div></div></div><div class="prob">${probs}</div></div><div class="results grid3">${tile('Original',dataUrl(r.original_image))}${tile('Current alpha',dataUrl(r.current_image),`α ${r.current_alpha.toFixed(2)}`)}${tile('Controller recommendation',dataUrl(r.recommended_image),`α ${r.suggested_alpha.toFixed(2)}`)}</div>${metadata(r.metadata)}`}catch(e){error(e.message)}finally{setBusy(false);$('#controllerResult').classList.remove('busy')}};
+    document.body.addEventListener('click',e=>{if(e.target.matches('.tile img')){$('#modal img').src=e.target.src;$('#modal').classList.add('open')}});$('#modal').onclick=()=>$('#modal').classList.remove('open');window.addEventListener('keydown',e=>{if(e.key==='Escape')$('#modal').classList.remove('open')});
+    fetch('/api/health').then(r=>r.json()).then(x=>{if(x.ready){$('#status').textContent='Frozen models verified';$('#device').textContent=`Model device: ${x.device.toUpperCase()}`}else{$('#status').textContent='Models not ready'}}).catch(()=>{$('#status').textContent='Backend unavailable'});
+  </script>
+</body>
+</html>

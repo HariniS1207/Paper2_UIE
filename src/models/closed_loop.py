@@ -29,20 +29,13 @@ class OneStepClosedLoop(nn.Module):
         alpha: torch.Tensor,
     ):
         enhanced = self.enhancer(x, alpha)
-
         redegraded = self.redegrader(enhanced)
-
-        consequence_map, consequence_vector = (
-            self.consequence_encoder(
-                x,
-                redegraded,
-            )
-        )
-
-        updated_alpha = self.feedback_controller(
-            consequence_vector,
-            alpha,
-        )
+        consequence_map, consequence_vector = self.consequence_encoder(x, enhanced, alpha)
+        adjustment = self.feedback_controller(consequence_vector, alpha)
+        alpha_batch = alpha.reshape(1) if alpha.ndim == 0 else alpha
+        if alpha_batch.numel() == 1:
+            alpha_batch = alpha_batch.expand(x.shape[0])
+        updated_alpha = torch.clamp(alpha_batch + adjustment, 0.0, 1.0)
 
         return {
             "enhanced": enhanced,
@@ -51,4 +44,5 @@ class OneStepClosedLoop(nn.Module):
             "consequence_vector": consequence_vector,
             "alpha": alpha,
             "updated_alpha": updated_alpha,
+            "adjustment": adjustment,
         }

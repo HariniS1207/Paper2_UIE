@@ -3,16 +3,11 @@ import torch.nn as nn
 
 
 class ConsequenceEncoder(nn.Module):
-    """
-    Encodes the consequence of enhancement.
-
-    The consequence is represented using the difference between
-    the original underwater image and a re-degraded reconstruction.
-    """
+    """Encode target-free enhancement state [X, Y, Y-X, alpha]."""
 
     def __init__(
         self,
-        channels: int = 3,
+        channels: int = 10,
         features: int = 32,
         embedding_dim: int = 128,
     ):
@@ -67,27 +62,21 @@ class ConsequenceEncoder(nn.Module):
 
         return vector
 
-    def forward(
-        self,
-        original: torch.Tensor,
-        redegraded: torch.Tensor,
-    ):
-        if original.ndim != 4 or redegraded.ndim != 4:
-            raise ValueError(
-                "Both inputs must have shape [B,C,H,W]"
-            )
-
-        if original.shape != redegraded.shape:
-            raise ValueError(
-                "original and redegraded must have identical shapes"
-            )
-
-        consequence = torch.abs(
-            original - redegraded
-        )
-
-        consequence_vector = self.encode_map(
-            consequence
-        )
-
+    def forward(self, original, enhanced, alpha):
+        if original.ndim != 4 or enhanced.ndim != 4:
+            raise ValueError("original and enhanced must have shape [B,C,H,W]")
+        if original.shape != enhanced.shape or original.shape[1] != 3:
+            raise ValueError("original and enhanced must be matching RGB tensors")
+        if alpha.ndim == 0:
+            alpha = alpha.reshape(1)
+        if alpha.ndim != 1:
+            raise ValueError("alpha must be a scalar tensor or have shape [B]")
+        if alpha.numel() == 1:
+            alpha = alpha.expand(original.shape[0])
+        elif alpha.numel() != original.shape[0]:
+            raise ValueError("alpha batch size must match the image batch")
+        alpha = alpha.to(device=original.device, dtype=original.dtype)
+        alpha_map = alpha[:, None, None, None].expand(-1, 1, *original.shape[-2:])
+        consequence = torch.cat((original, enhanced, enhanced - original, alpha_map), dim=1)
+        consequence_vector = self.encode_map(consequence)
         return consequence, consequence_vector

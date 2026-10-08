@@ -36,6 +36,10 @@ results/*
 # Experiment outputs
 experiments/*
 !experiments/.gitkeep
+!experiments/analyze_feedback_targets.py
+!experiments/analyze_consequence_features.py
+!experiments/run_feedback_phase.py
+!experiments/diagnose_feedback_failure.py
 
 # Logs
 *.log
